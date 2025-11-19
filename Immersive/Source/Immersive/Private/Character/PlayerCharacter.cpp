@@ -6,7 +6,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "GameFramework/PlayerController.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 // Sets default values
@@ -45,7 +45,7 @@ void APlayerCharacter::BeginPlay()
     {
         if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
         {
-            Subsystem->AddMappingContext(PlayerMappingContext, 0); // Add your IMC
+            Subsystem->AddMappingContext(DefaultMappingContext, 0); // Add your IMC
         }
     }
 }
@@ -65,18 +65,18 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
     {
         // Bind Move
-        EnhancedInputComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AMyCharacter::Move);
+        EnhancedInputComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
 
         // Bind Look
-        EnhancedInputComponent->BindAction(IA_Look, ETriggerEvent::Triggered, this, &AMyCharacter::Look);
+        EnhancedInputComponent->BindAction(IA_Look, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 
         // Bind Jump
-        EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Started, this, &AMyCharacter::JumpPressed);
-        EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Completed, this, &AMyCharacter::JumpReleased);
+        EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Started, this, &APlayerCharacter::JumpPressed);
+        EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Completed, this, &APlayerCharacter::JumpReleased);
     }
 }
 
-void Move(const FInputActionValue& Value)
+void APlayerCharacter::Move(const FInputActionValue& Value)
 {
     // Input is a Vector2D
     FVector2D MovementVector = Value.Get<FVector2D>();
@@ -94,7 +94,7 @@ void Move(const FInputActionValue& Value)
         AddMovementInput(RightDirection, MovementVector.X);
 	}
 }
-void Look(const FInputActionValue& Value)
+void APlayerCharacter::Look(const FInputActionValue& Value)
 {
     // Input is a Vector2D
     FVector2D LookAxisVector = Value.Get<FVector2D>();
@@ -105,11 +105,11 @@ void Look(const FInputActionValue& Value)
         AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
-void JumpPressed()
+void APlayerCharacter::JumpPressed()
 {
 	Jump();
 }
-void JumpReleased()
+void APlayerCharacter::JumpReleased()
 {
 	StopJumping();
 }
