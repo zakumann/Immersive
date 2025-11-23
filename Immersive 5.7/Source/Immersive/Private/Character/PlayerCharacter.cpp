@@ -7,7 +7,6 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/SpringArmComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -34,6 +33,11 @@ APlayerCharacter::APlayerCharacter()
 
     // Let movement not rotate the character automatically (we handle via controller)
     GetCharacterMovement()->bOrientRotationToMovement = false;
+
+    // Initialize speeds
+    WalkSpeed = GetCharacterMovement()->MaxWalkSpeed; // Get default walk speed
+    SprintSpeed = 1000.0f; // Example sprint speed
+    bIsSprinting = false;
 }
 
 // Called when the game starts or when spawned
@@ -70,9 +74,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
         // Bind Look
         EnhancedInputComponent->BindAction(IA_Look, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 
-        // Bind Jump
-        EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Started, this, &APlayerCharacter::JumpPressed);
-        EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Completed, this, &APlayerCharacter::JumpReleased);
+        // Bind Sprint
+        EnhancedInputComponent->BindAction(IA_Sprint, ETriggerEvent::Started, this, &APlayerCharacter::StartSprint);
+        EnhancedInputComponent->BindAction(IA_Sprint, ETriggerEvent::Completed, this, &APlayerCharacter::StopSprint);
     }
 }
 
@@ -105,11 +109,21 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
         AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
-void APlayerCharacter::JumpPressed()
+void APlayerCharacter::StartSprint()
 {
-	Jump();
+    if (!bIsSprinting)
+    {
+        GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+        bIsSprinting = true;
+        // Optionally, start stamina depletion
+    }
 }
-void APlayerCharacter::JumpReleased()
+void APlayerCharacter::StopSprint()
 {
-	StopJumping();
+    if (bIsSprinting)
+    {
+        GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+        bIsSprinting = false;
+        // Optionally, stop stamina depletion and start regeneration
+    }
 }

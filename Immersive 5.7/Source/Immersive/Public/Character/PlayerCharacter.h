@@ -43,7 +43,7 @@ protected:
     UInputAction* IA_Look;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    UInputAction* IA_Jump;
+    UInputAction* IA_Sprint;
 
     // Input Mapping Context reference
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
@@ -52,6 +52,15 @@ protected:
     // Input handling functions
     void Move(const FInputActionValue& Value);
     void Look(const FInputActionValue& Value);
-    void JumpPressed(); // For Digital Input Actions
-    void JumpReleased();
+    void StartSprint(); // For Digital Input Actions
+    void StopSprint();
+
+protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+    float WalkSpeed;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+    float SprintSpeed;
+
+    bool bIsSprinting;
 };
