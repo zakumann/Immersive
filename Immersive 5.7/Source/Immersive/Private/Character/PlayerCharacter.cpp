@@ -77,6 +77,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
         // Bind Sprint
         EnhancedInputComponent->BindAction(IA_Sprint, ETriggerEvent::Started, this, &APlayerCharacter::StartSprint);
         EnhancedInputComponent->BindAction(IA_Sprint, ETriggerEvent::Completed, this, &APlayerCharacter::StopSprint);
+
+        // Bind Interact
+        EnhancedInputComponent->BindAction(IA_Interact, ETriggerEvent::Completed, this, &APlayerCharacter::Interaction);
     }
 }
 
@@ -126,4 +129,8 @@ void APlayerCharacter::StopSprint()
         bIsSprinting = false;
         // Optionally, stop stamina depletion and start regeneration
     }
+}
+
+void APlayerCharacter::Interaction()
+{
 }

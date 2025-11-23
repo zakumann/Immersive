@@ -45,6 +45,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
     UInputAction* IA_Sprint;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+    UInputAction* IA_Interact;
+
     // Input Mapping Context reference
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
     UInputMappingContext* DefaultMappingContext;
@@ -54,6 +57,7 @@ protected:
     void Look(const FInputActionValue& Value);
     void StartSprint(); // For Digital Input Actions
     void StopSprint();
+    void Interaction();
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
