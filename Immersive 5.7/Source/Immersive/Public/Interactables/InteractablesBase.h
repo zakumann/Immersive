@@ -4,25 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Immersive/Interface/InteractableInterface.h"
-#include "InteractableBase.generated.h"
+#include "Interfaces/InteractablesInterface.h"
+#include "InteractablesBase.generated.h"
 
 class USphereComponent;
 class UWidgetComponent;
 
 UCLASS()
-class IMMERSIVE_API AInteractableBase : public AActor, public IInteractableInterface
+class IMMERSIVE_API AInteractablesBase : public AActor, public IInteractablesInterface
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AInteractableBase();
+	AInteractablesBase();
 
 	virtual void OnInteractionRangeEntered() override;
 	virtual void OnInteractionRangeExited() override;
-	virtual void OnInteracted(PlayerCharacter* Player) override;
-	virtual void HandleInteraction(PlayerCharacter* Player) override;
+	virtual void OnInteracted(APlayerCharacter* PlayerCharacter) override;
+	virtual void HandleInteraction(APlayerCharacter* PlayerCharacter) override;
 	virtual bool CanBeInteracted() const { return true; }
 
 protected:
@@ -45,9 +45,10 @@ protected:
 	UWidgetComponent* InteractionWidgetComponent = nullptr;
 
 private:
-	UFUNCTION()
-	void OnBeginOverlap(AActor* OverlappedActor, AActor* OtehrActor);
 
 	UFUNCTION()
-	void OnEndOverlap(AActor* OverlappedActor, AActor* OtehrActor);
+	void OnBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
+
+	UFUNCTION()
+	void OnEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
 };

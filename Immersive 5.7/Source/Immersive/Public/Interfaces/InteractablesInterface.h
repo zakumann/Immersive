@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "InteractableInterface.generated.h"
+#include "InteractablesInterface.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UInteractableInterface : public UInterface
+class UInteractablesInterface : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -16,9 +16,10 @@ class UInteractableInterface : public UInterface
 /**
  * 
  */
-class PlayerCharacter;
 
-class IMMERSIVE_API IInteractableInterface
+class APlayerCharacter;
+
+class IMMERSIVE_API IInteractablesInterface
 {
 	GENERATED_BODY()
 
@@ -27,7 +28,7 @@ public:
 
 	virtual void OnInteractionRangeEntered() = 0;
 	virtual void OnInteractionRangeExited() = 0;
-	virtual void OnInteracted(PlayerCharacter* Player) = 0;
-	virtual void HandleInteraction(PlayerCharacter* Player) = 0;
+	virtual void OnInteracted(APlayerCharacter* PlayerCharacter) = 0;
+	virtual void HandleInteraction(APlayerCharacter* PlayerCharacter) = 0;
 	virtual bool CanBeInteracted() const = 0;
 };

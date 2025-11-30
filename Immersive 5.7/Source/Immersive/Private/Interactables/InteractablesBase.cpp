@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Interactable/InteractableBase.h"
+#include "Interactables/InteractablesBase.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 
 // Sets default values
-AInteractableBase::AInteractableBase()
+AInteractablesBase::AInteractablesBase()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
@@ -23,62 +23,59 @@ AInteractableBase::AInteractableBase()
 	InteractionWidgetComponent->SetupAttachment(InteractableMesh);
 	InteractionWidgetComponent->SetDrawAtDesiredSize(true);
 	InteractionWidgetComponent->SetHiddenInGame(true, true);
+}
 
-	static ConstructorHelpers::FClassFinder<UUserWidget>InteractionWidgetClassFinder(TEXT("/Game/Blueprints/WBP_InteractionWidget"));
-	if (InteractionWidgetClassFinder.Succeeded())
+void AInteractablesBase::OnInteractionRangeEntered()
+{
+	if (InteractionWidgetComponent)
 	{
-		InteractionWidgetComponent->SetWidgetClass(InteractionWidgetClassFinder.Class);
+		InteractionWidgetComponent->SetHiddenInGame(false, true);
 	}
 }
 
-void AInteractableBase::OnInteractionRangeEntered()
+void AInteractablesBase::OnInteractionRangeExited()
 {
 	if (InteractionWidgetComponent)
-		InteractionWidgetComponent->SetHiddenInGame(false, true);
-}
-
-void AInteractableBase::OnInteractionRangeExited()
-{
-	if (InteractionWidgetComponent)
+	{
 		InteractionWidgetComponent->SetHiddenInGame(true, true);
+	}
 }
 
-void AInteractableBase::OnInteracted(PlayerCharacter* Player)
+void AInteractablesBase::OnInteracted(APlayerCharacter* PlayerCharacter)
 {
 	if (CanBeInteracted())
 	{
-		HandleInteraction(Player);
+		HandleInteraction(PlayerCharacter);
 	}
 }
 
-void AInteractableBase::HandleInteraction(PlayerCharacter* Player)
+void AInteractablesBase::HandleInteraction(APlayerCharacter* PlayerCharacter)
 {
 	// Override in child classes
-
 }
 
 // Called when the game starts or when spawned
-void AInteractableBase::BeginPlay()
+void AInteractablesBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	OnActorBeginOverlap.AddDynamic(this, &AInteractableBase::OnBeginOverlap);
-	OnActorEndOverlap.AddDynamic(this, &AInteractableBase::OnEndOverlap);
+	OnActorBeginOverlap.AddDynamic(this, &AInteractablesBase::OnBeginOverlap);
+	OnActorEndOverlap.AddDynamic(this, &AInteractablesBase::OnEndOverlap);
 }
 
 // Called every frame
-void AInteractableBase::Tick(float DeltaTime)
+void AInteractablesBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-void AInteractableBase::OnBeginOverlap(AActor* OverlappedActor, AActor* OtehrActor)
+void AInteractablesBase::OnBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	OnInteractionRangeEntered();
 }
 
-void AInteractableBase::OnEndOverlap(AActor* OverlappedActor, AActor* OtehrActor)
+void AInteractablesBase::OnEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	OnInteractionRangeExited();
 }
