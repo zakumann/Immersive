@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Interfaces/InteractablesInterface.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -133,4 +134,16 @@ void APlayerCharacter::StopSprint()
 
 void APlayerCharacter::Interaction()
 {
+    TArray<AActor*> OverlappedActors;
+    GetCapsuleComponent()->GetOverlappingActors(OverlappedActors);
+    for (AActor* Actor : OverlappedActors)
+    {
+        if (Actor->GetClass()->ImplementsInterface(UInteractablesInterface::StaticClass()))
+        {
+            if (IInteractablesInterface* InteractablesInterface = Cast<IInteractablesInterface>(OverlappedActor))
+            {
+                InteractablesInterface->OnInteracted(this);
+            }
+        }
+    }
 }
